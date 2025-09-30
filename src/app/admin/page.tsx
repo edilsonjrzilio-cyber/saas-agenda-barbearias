@@ -22,7 +22,9 @@ import {
   AlertTriangle,
   Search,
   Filter,
-  MoreVertical
+  MoreVertical,
+  Link,
+  Copy
 } from "lucide-react";
 
 // Dados simulados
@@ -56,7 +58,8 @@ const barbeiros = [
     plano: "Equipe",
     status: "ativo",
     link: "https://barbearia.com/carlos",
-    senha: "********"
+    senha: "123456",
+    login: "carlos"
   },
   {
     id: 2,
@@ -66,7 +69,8 @@ const barbeiros = [
     plano: "Individual",
     status: "ativo",
     link: "https://barbearia.com/roberto",
-    senha: "********"
+    senha: "123456",
+    login: "roberto"
   }
 ];
 
@@ -164,6 +168,10 @@ export default function AdminPanel() {
           alert("Barbeiro excluído com sucesso!");
         }
         break;
+      case "copyLink":
+        navigator.clipboard.writeText(barbeiro.link);
+        alert("Link copiado para a área de transferência!");
+        break;
     }
   };
 
@@ -204,14 +212,14 @@ export default function AdminPanel() {
     if (!showModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md mx-4">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">
               {modalType === "createBarber" && "Criar Barbeiro"}
               {modalType === "editBarber" && "Editar Barbeiro"}
               {modalType === "editClient" && "Editar Cliente"}
-              {modalType === "changePassword" && "Alterar Senha"}
+              {modalType === "changePassword" && "Alterar Senha e Login"}
               {modalType === "createPlan" && "Criar Plano"}
               {modalType === "editPlan" && "Editar Plano"}
             </h3>
@@ -227,7 +235,7 @@ export default function AdminPanel() {
             {(modalType === "createBarber" || modalType === "editBarber") && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Nome</label>
+                  <label className="block text-sm font-medium mb-2">Nome *</label>
                   <input
                     type="text"
                     defaultValue={selectedItem?.nome || ""}
@@ -236,7 +244,16 @@ export default function AdminPanel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Telefone</label>
+                  <label className="block text-sm font-medium mb-2">Login *</label>
+                  <input
+                    type="text"
+                    defaultValue={selectedItem?.login || ""}
+                    className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
+                    placeholder="Login para acesso"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Telefone *</label>
                   <input
                     type="tel"
                     defaultValue={selectedItem?.telefone || ""}
@@ -245,7 +262,7 @@ export default function AdminPanel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email</label>
+                  <label className="block text-sm font-medium mb-2">Email *</label>
                   <input
                     type="email"
                     defaultValue={selectedItem?.email || ""}
@@ -254,15 +271,16 @@ export default function AdminPanel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Senha</label>
+                  <label className="block text-sm font-medium mb-2">Senha *</label>
                   <input
                     type="password"
+                    defaultValue={selectedItem?.senha || ""}
                     className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
                     placeholder="Nova senha"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Plano</label>
+                  <label className="block text-sm font-medium mb-2">Plano *</label>
                   <select 
                     defaultValue={selectedItem?.plano || "Individual"}
                     className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
@@ -272,13 +290,22 @@ export default function AdminPanel() {
                     <option value="Premium">Premium</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Link Personalizado</label>
+                  <input
+                    type="text"
+                    defaultValue={selectedItem?.link || ""}
+                    className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
+                    placeholder="https://barbearia.com/barbeiro"
+                  />
+                </div>
               </>
             )}
 
             {modalType === "editClient" && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Nome</label>
+                  <label className="block text-sm font-medium mb-2">Nome *</label>
                   <input
                     type="text"
                     defaultValue={selectedItem?.nome || ""}
@@ -286,7 +313,7 @@ export default function AdminPanel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Telefone</label>
+                  <label className="block text-sm font-medium mb-2">Telefone *</label>
                   <input
                     type="tel"
                     defaultValue={selectedItem?.telefone || ""}
@@ -301,11 +328,36 @@ export default function AdminPanel() {
                     className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Status</label>
+                  <select 
+                    defaultValue={selectedItem?.status || "ativo"}
+                    className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
+                  >
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                    <option value="bloqueado">Bloqueado</option>
+                  </select>
+                </div>
               </>
             )}
 
             {modalType === "changePassword" && (
               <>
+                <div className="bg-[#0C0C0D] rounded-xl p-4 border border-[#1F2937] mb-4">
+                  <div className="text-sm text-[#94A3B8] mb-2">Barbeiro:</div>
+                  <div className="font-medium">{selectedItem?.nome}</div>
+                  <div className="text-sm text-[#94A3B8]">Login atual: {selectedItem?.login}</div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Novo Login</label>
+                  <input
+                    type="text"
+                    defaultValue={selectedItem?.login || ""}
+                    className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
+                    placeholder="Novo login"
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Nova Senha</label>
                   <input
@@ -328,7 +380,7 @@ export default function AdminPanel() {
             {(modalType === "createPlan" || modalType === "editPlan") && (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Nome do Plano</label>
+                  <label className="block text-sm font-medium mb-2">Nome do Plano *</label>
                   <input
                     type="text"
                     defaultValue={selectedItem?.nome || ""}
@@ -337,7 +389,7 @@ export default function AdminPanel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Preço (R$)</label>
+                  <label className="block text-sm font-medium mb-2">Preço (R$) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -347,12 +399,22 @@ export default function AdminPanel() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Recursos</label>
+                  <label className="block text-sm font-medium mb-2">Recursos *</label>
                   <textarea
                     defaultValue={selectedItem?.recursos?.join(", ") || ""}
                     className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2 h-20"
                     placeholder="Recurso 1, Recurso 2, Recurso 3"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Status</label>
+                  <select 
+                    defaultValue={selectedItem?.status || "ativo"}
+                    className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
+                  >
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                  </select>
                 </div>
               </>
             )}
@@ -383,10 +445,10 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-[#0C0C0D] text-[#F5F5F7]">
       {/* Header */}
-      <div className="bg-[#141416] border-b border-[#1F2937] p-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-[#141416] border-b border-[#1F2937] p-4 md:p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold">Painel Administrativo</h1>
+            <h1 className="text-xl md:text-2xl font-bold">Painel Administrativo</h1>
             <p className="text-[#94A3B8]">Gerencie todo o sistema</p>
           </div>
           <div className="flex items-center space-x-4">
@@ -397,7 +459,7 @@ export default function AdminPanel() {
                 placeholder="Buscar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-[#0C0C0D] border border-[#1F2937] rounded-xl pl-10 pr-4 py-2 w-64"
+                className="bg-[#0C0C0D] border border-[#1F2937] rounded-xl pl-10 pr-4 py-2 w-full md:w-64"
               />
             </div>
           </div>
@@ -405,8 +467,8 @@ export default function AdminPanel() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-[#141416] border-b border-[#1F2937]">
-        <div className="flex space-x-8 px-6">
+      <div className="bg-[#141416] border-b border-[#1F2937] overflow-x-auto">
+        <div className="flex space-x-8 px-4 md:px-6 min-w-max">
           {[
             { id: "clientes", label: "Clientes", icon: Users },
             { id: "barbeiros", label: "Barbeiros", icon: Scissors },
@@ -416,7 +478,7 @@ export default function AdminPanel() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 py-4 border-b-2 transition-colors ${
+              className={`flex items-center space-x-2 py-4 border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? "border-[#3B82F6] text-[#3B82F6]"
                   : "border-transparent text-[#94A3B8] hover:text-[#F5F5F7]"
@@ -430,11 +492,11 @@ export default function AdminPanel() {
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Clientes Tab */}
         {activeTab === "clientes" && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
               <h2 className="text-xl font-bold">Gerenciar Clientes</h2>
               <div className="flex space-x-3">
                 <button className="bg-[#1F2937] text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
@@ -445,7 +507,7 @@ export default function AdminPanel() {
 
             <div className="bg-[#141416] rounded-2xl border border-[#1F2937] overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[800px]">
                   <thead className="bg-[#1F2937]">
                     <tr>
                       <th className="text-left p-4">Cliente</th>
@@ -537,7 +599,7 @@ export default function AdminPanel() {
         {/* Barbeiros Tab */}
         {activeTab === "barbeiros" && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
               <h2 className="text-xl font-bold">Gerenciar Barbeiros</h2>
               <button
                 onClick={() => handleBarberAction("create")}
@@ -550,7 +612,7 @@ export default function AdminPanel() {
 
             <div className="bg-[#141416] rounded-2xl border border-[#1F2937] overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[900px]">
                   <thead className="bg-[#1F2937]">
                     <tr>
                       <th className="text-left p-4">Barbeiro</th>
@@ -571,7 +633,7 @@ export default function AdminPanel() {
                             </div>
                             <div>
                               <div className="font-medium">{barbeiro.nome}</div>
-                              <div className="text-sm text-[#94A3B8]">ID: {barbeiro.id}</div>
+                              <div className="text-sm text-[#94A3B8]">Login: {barbeiro.login}</div>
                             </div>
                           </div>
                         </td>
@@ -594,14 +656,22 @@ export default function AdminPanel() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <a 
-                            href={barbeiro.link} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-[#3B82F6] hover:underline text-sm"
-                          >
-                            {barbeiro.link}
-                          </a>
+                          <div className="flex items-center space-x-2">
+                            <a 
+                              href={barbeiro.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-[#3B82F6] hover:underline text-sm truncate max-w-[150px]"
+                            >
+                              {barbeiro.link}
+                            </a>
+                            <button
+                              onClick={() => handleBarberAction("copyLink", barbeiro)}
+                              className="p-1 text-[#94A3B8] hover:text-white transition-colors"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
                         </td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded-lg text-xs ${
@@ -646,7 +716,7 @@ export default function AdminPanel() {
         {/* Planos Tab */}
         {activeTab === "planos" && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
               <h2 className="text-xl font-bold">Gerenciar Planos</h2>
               <button
                 onClick={() => handlePlanAction("create")}
@@ -714,7 +784,7 @@ export default function AdminPanel() {
         {/* Tickets Tab */}
         {activeTab === "tickets" && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
               <h2 className="text-xl font-bold">Tickets de Suporte</h2>
               <div className="flex space-x-3">
                 <span className="bg-[#EF4444]/10 text-[#EF4444] px-3 py-1 rounded-lg text-sm">
@@ -728,8 +798,8 @@ export default function AdminPanel() {
 
             <div className="space-y-4">
               {tickets.map((ticket) => (
-                <div key={ticket.id} className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6">
-                  <div className="flex items-start justify-between mb-4">
+                <div key={ticket.id} className="bg-[#141416] rounded-2xl border border-[#1F2937] p-4 md:p-6">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between mb-4 space-y-3 md:space-y-0">
                     <div className="flex items-center space-x-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                         ticket.tipo === "cliente" ? "bg-[#3B82F6]" : "bg-[#D4AF37]"
@@ -762,10 +832,10 @@ export default function AdminPanel() {
                     <p className="text-[#94A3B8] text-sm">{ticket.mensagem}</p>
                   </div>
 
-                  <div className="flex space-x-2">
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                     <button
                       onClick={() => handleTicketAction("view", ticket)}
-                      className="bg-[#3B82F6] text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center space-x-2"
+                      className="bg-[#3B82F6] text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
                     >
                       <Eye className="w-4 h-4" />
                       <span>Ver Detalhes</span>
@@ -773,7 +843,7 @@ export default function AdminPanel() {
                     {ticket.status === "aberto" && (
                       <button
                         onClick={() => handleTicketAction("resolve", ticket)}
-                        className="bg-[#10B981] text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center space-x-2"
+                        className="bg-[#10B981] text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
                       >
                         <CheckCircle className="w-4 h-4" />
                         <span>Resolver</span>
