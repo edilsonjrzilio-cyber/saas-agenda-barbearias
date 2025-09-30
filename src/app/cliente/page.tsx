@@ -21,7 +21,9 @@ import {
   Star,
   History,
   CreditCard,
-  HelpCircle
+  HelpCircle,
+  Scissors,
+  Menu
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -102,6 +104,7 @@ export default function ClientPanel() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [showConfigModal, setShowConfigModal] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   
   // Estados do ticket
@@ -111,7 +114,7 @@ export default function ClientPanel() {
 
   const handleLogout = () => {
     if (confirm("Deseja realmente sair?")) {
-      router.push("/barbeiro/logout");
+      router.push("/login");
     }
   };
 
@@ -137,8 +140,8 @@ export default function ClientPanel() {
     if (!showTicketModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md mx-4">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Abrir Ticket de Suporte</h3>
             <button 
@@ -211,8 +214,8 @@ export default function ClientPanel() {
     if (!showConfigModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md mx-4">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Configurações</h3>
             <button 
@@ -303,9 +306,19 @@ export default function ClientPanel() {
       {/* Header */}
       <div className="bg-[#141416] border-b border-[#1F2937] p-4">
         <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm text-[#94A3B8] mb-1">🏪 Barbearia Exemplo</div>
-            <h1 className="text-xl font-bold">Painel do Cliente</h1>
+          <div className="flex items-center space-x-4">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="md:hidden p-2 text-[#94A3B8] hover:text-white transition-colors"
+            >
+              {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+            
+            <div>
+              <div className="text-sm text-[#94A3B8] mb-1">🏪 Barbearia Exemplo</div>
+              <h1 className="text-xl font-bold">Painel do Cliente</h1>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -355,7 +368,7 @@ export default function ClientPanel() {
                 <div className="w-8 h-8 bg-[#3B82F6] rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-medium">{clienteInfo.nome}</span>
+                <span className="font-medium hidden sm:block">{clienteInfo.nome}</span>
                 <ChevronDown className="w-4 h-4 text-[#94A3B8]" />
               </button>
 
@@ -399,7 +412,8 @@ export default function ClientPanel() {
 
       {/* Navigation */}
       <div className="bg-[#141416] border-b border-[#1F2937]">
-        <div className="flex space-x-8 px-6">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex space-x-8 px-6">
           {[
             { id: "dashboard", label: "Dashboard", icon: Calendar },
             { id: "historico", label: "Histórico", icon: History },
@@ -419,10 +433,39 @@ export default function ClientPanel() {
             </button>
           ))}
         </div>
+
+        {/* Mobile Navigation */}
+        {showMobileMenu && (
+          <div className="md:hidden bg-[#141416] border-t border-[#1F2937]">
+            <div className="space-y-1 p-4">
+              {[
+                { id: "dashboard", label: "Dashboard", icon: Calendar },
+                { id: "historico", label: "Histórico", icon: History },
+                { id: "perfil", label: "Perfil", icon: User }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setShowMobileMenu(false);
+                  }}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors text-left ${
+                    activeTab === tab.id
+                      ? "bg-[#3B82F6]/10 text-[#3B82F6]"
+                      : "text-[#94A3B8] hover:text-[#F5F5F7] hover:bg-[#1F2937]"
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         {/* Dashboard Tab */}
         {activeTab === "dashboard" && (
           <div className="space-y-6">
@@ -475,7 +518,7 @@ export default function ClientPanel() {
             <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6">
               <h2 className="text-xl font-bold mb-4">Próximo Agendamento</h2>
               <div className="bg-[#0C0C0D] rounded-xl p-4 border border-[#1F2937]">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-[#3B82F6] rounded-full flex items-center justify-center">
                       <Calendar className="w-6 h-6 text-white" />
@@ -535,7 +578,7 @@ export default function ClientPanel() {
             <div className="space-y-4">
               {historico.map((item) => (
                 <div key={item.id} className="bg-[#141416] rounded-2xl border border-[#1F2937] p-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between space-y-3 md:space-y-0">
                     <div className="flex items-center space-x-4">
                       <div className="w-10 h-10 bg-[#10B981] rounded-full flex items-center justify-center">
                         <CheckCircle className="w-5 h-5 text-white" />
@@ -563,7 +606,7 @@ export default function ClientPanel() {
           <div>
             <h2 className="text-xl font-bold mb-6">Meu Perfil</h2>
             <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6">
-              <div className="flex items-center space-x-6 mb-6">
+              <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-6">
                 <div className="w-20 h-20 bg-[#3B82F6] rounded-full flex items-center justify-center">
                   <User className="w-10 h-10 text-white" />
                 </div>
