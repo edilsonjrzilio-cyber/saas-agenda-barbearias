@@ -127,4 +127,212 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Responsividade global */
+  html {
+    @apply scroll-smooth;
+  }
+  
+  /* Melhorias para mobile */
+  @media (max-width: 768px) {
+    /* Ajustes para telas pequenas */
+    .mobile-optimized {
+      @apply text-sm;
+    }
+    
+    /* Botões mais acessíveis em mobile */
+    button {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    /* Inputs mais acessíveis */
+    input, textarea, select {
+      @apply min-h-[44px];
+    }
+    
+    /* Modais responsivos */
+    .modal-mobile {
+      @apply w-full h-full rounded-none;
+    }
+  }
+  
+  /* Melhorias para tablets */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .tablet-optimized {
+      @apply text-base;
+    }
+  }
+  
+  /* Scrollbar personalizada */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-[#0C0C0D];
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[#1F2937] rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-[#374151];
+  }
+  
+  /* Animações suaves */
+  .smooth-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Focus states melhorados */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#0C0C0D];
+  }
+  
+  /* Estados de hover melhorados */
+  .hover-lift {
+    @apply hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-200;
+  }
+  
+  /* Gradientes personalizados */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-[#3B82F6] to-[#D4AF37];
+  }
+  
+  .gradient-secondary {
+    @apply bg-gradient-to-r from-[#8B5CF6] to-[#3B82F6];
+  }
+  
+  /* Sombras personalizadas */
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  
+  .shadow-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Estados de loading */
+  .loading-pulse {
+    @apply animate-pulse bg-[#1F2937];
+  }
+  
+  /* Utilitários para texto */
+  .text-gradient {
+    @apply bg-gradient-to-r from-[#3B82F6] to-[#D4AF37] bg-clip-text text-transparent;
+  }
+  
+  /* Melhorias para acessibilidade */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+  
+  /* Estados de erro */
+  .error-state {
+    @apply border-red-500 bg-red-50 text-red-900;
+  }
+  
+  /* Estados de sucesso */
+  .success-state {
+    @apply border-green-500 bg-green-50 text-green-900;
+  }
+  
+  /* Melhorias para formulários */
+  .form-input {
+    @apply w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2 text-[#F5F5F7] placeholder-[#94A3B8] focus:border-[#3B82F6] focus:outline-none transition-colors;
+  }
+  
+  .form-button {
+    @apply bg-[#3B82F6] text-white px-4 py-2 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  /* Melhorias para cards */
+  .card-base {
+    @apply bg-[#141416] rounded-2xl border border-[#1F2937] p-4 md:p-6;
+  }
+  
+  .card-hover {
+    @apply hover:border-[#94A3B8] transition-colors;
+  }
+  
+  /* Melhorias para navegação */
+  .nav-link {
+    @apply flex items-center space-x-2 py-4 border-b-2 transition-colors;
+  }
+  
+  .nav-link-active {
+    @apply border-[#3B82F6] text-[#3B82F6];
+  }
+  
+  .nav-link-inactive {
+    @apply border-transparent text-[#94A3B8] hover:text-[#F5F5F7];
+  }
+}
+
+/* Melhorias específicas para o sistema de barbearia */
+@layer components {
+  .barber-card {
+    @apply bg-[#141416] rounded-2xl border border-[#1F2937] p-6 hover:border-[#94A3B8] transition-colors;
+  }
+  
+  .appointment-card {
+    @apply flex items-center justify-between p-4 bg-[#0C0C0D] rounded-xl border border-[#1F2937] hover:border-[#94A3B8] transition-colors;
+  }
+  
+  .status-badge {
+    @apply px-2 py-1 rounded-lg text-xs;
+  }
+  
+  .status-completed {
+    @apply bg-[#10B981]/10 text-[#10B981];
+  }
+  
+  .status-confirmed {
+    @apply bg-[#3B82F6]/10 text-[#3B82F6];
+  }
+  
+  .status-pending {
+    @apply bg-[#F59E0B]/10 text-[#F59E0B];
+  }
+  
+  .status-cancelled {
+    @apply bg-[#EF4444]/10 text-[#EF4444];
+  }
+  
+  .action-button {
+    @apply p-2 rounded-lg transition-colors;
+  }
+  
+  .action-button-primary {
+    @apply text-[#3B82F6] hover:bg-[#3B82F6]/10;
+  }
+  
+  .action-button-warning {
+    @apply text-[#F59E0B] hover:bg-[#F59E0B]/10;
+  }
+  
+  .action-button-danger {
+    @apply text-[#EF4444] hover:bg-[#EF4444]/10;
+  }
+  
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4;
+  }
+  
+  .modal-content {
+    @apply bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md max-h-[90vh] overflow-y-auto;
+  }
+  
+  .notification-badge {
+    @apply absolute -top-1 -right-1 bg-[#EF4444] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center;
+  }
+  
+  .whatsapp-message-sent {
+    @apply bg-[#25D366] text-white max-w-xs lg:max-w-md px-4 py-2 rounded-2xl;
+  }
+  
+  .whatsapp-message-received {
+    @apply bg-[#1F2937] text-white max-w-xs lg:max-w-md px-4 py-2 rounded-2xl;
+  }
 }
