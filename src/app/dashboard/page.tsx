@@ -31,10 +31,7 @@ import {
   Send,
   X,
   Wifi,
-  WifiOff,
-  Star,
-  User,
-  Scissors
+  WifiOff
 } from "lucide-react";
 import BarberNavigation from "@/components/barber-navigation";
 import { useRouter } from "next/navigation";
@@ -130,7 +127,6 @@ export default function BarberDashboard() {
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [showClientView, setShowClientView] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
-  const [showNewAppointmentModal, setShowNewAppointmentModal] = useState(false);
   const [whatsappConnected, setWhatsappConnected] = useState(false);
   const [showWhatsappModal, setShowWhatsappModal] = useState(false);
   
@@ -139,16 +135,6 @@ export default function BarberDashboard() {
   const [ticketMensagem, setTicketMensagem] = useState("");
   const [ticketTipo, setTicketTipo] = useState("problema");
 
-  // Estados do novo agendamento
-  const [newAppointment, setNewAppointment] = useState({
-    client: "",
-    phone: "",
-    service: "",
-    date: "",
-    time: "",
-    price: ""
-  });
-
   // Calcular dias restantes do plano (exemplo: expira em 15 dias)
   const planExpiryDate = new Date();
   planExpiryDate.setDate(planExpiryDate.getDate() + 15);
@@ -156,25 +142,8 @@ export default function BarberDashboard() {
 
   // Funções das ações rápidas
   const handleNewAppointment = () => {
-    setShowNewAppointmentModal(true);
-  };
-
-  const handleSaveNewAppointment = () => {
-    if (!newAppointment.client || !newAppointment.phone || !newAppointment.service || !newAppointment.date || !newAppointment.time) {
-      alert("Por favor, preencha todos os campos obrigatórios.");
-      return;
-    }
-
-    alert("Agendamento criado com sucesso!");
-    setNewAppointment({
-      client: "",
-      phone: "",
-      service: "",
-      date: "",
-      time: "",
-      price: ""
-    });
-    setShowNewAppointmentModal(false);
+    alert("Redirecionando para novo agendamento...");
+    // Em produção: router.push('/agendamentos/novo');
   };
 
   const handleSendReminders = () => {
@@ -274,118 +243,12 @@ export default function BarberDashboard() {
     }
   };
 
-  const renderNewAppointmentModal = () => {
-    if (!showNewAppointmentModal) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold">Novo Agendamento Manual</h3>
-            <button 
-              onClick={() => setShowNewAppointmentModal(false)}
-              className="text-[#94A3B8] hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Nome do Cliente *</label>
-              <input
-                type="text"
-                value={newAppointment.client}
-                onChange={(e) => setNewAppointment({...newAppointment, client: e.target.value})}
-                className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
-                placeholder="Nome completo"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Telefone *</label>
-              <input
-                type="tel"
-                value={newAppointment.phone}
-                onChange={(e) => setNewAppointment({...newAppointment, phone: e.target.value})}
-                className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
-                placeholder="54999887766"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Serviço *</label>
-              <select 
-                value={newAppointment.service}
-                onChange={(e) => setNewAppointment({...newAppointment, service: e.target.value})}
-                className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
-              >
-                <option value="">Selecione o serviço</option>
-                <option value="Corte Masculino">Corte Masculino - R$ 35</option>
-                <option value="Corte + Barba">Corte + Barba - R$ 55</option>
-                <option value="Barba">Barba - R$ 25</option>
-                <option value="Sobrancelha">Sobrancelha - R$ 15</option>
-                <option value="Relaxamento">Relaxamento - R$ 45</option>
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-medium mb-2">Data *</label>
-                <input
-                  type="date"
-                  value={newAppointment.date}
-                  onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
-                  className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Horário *</label>
-                <input
-                  type="time"
-                  value={newAppointment.time}
-                  onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
-                  className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Observações</label>
-              <textarea
-                className="w-full bg-[#0C0C0D] border border-[#1F2937] rounded-xl px-3 py-2 h-20 resize-none"
-                placeholder="Observações adicionais (opcional)"
-              />
-            </div>
-          </div>
-
-          <div className="flex space-x-3 mt-6">
-            <button
-              onClick={handleSaveNewAppointment}
-              className="flex-1 bg-[#3B82F6] text-white py-2 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center space-x-2"
-            >
-              <CheckCircle className="w-4 h-4" />
-              <span>Agendar</span>
-            </button>
-            <button
-              onClick={() => setShowNewAppointmentModal(false)}
-              className="flex-1 bg-[#1F2937] text-white py-2 rounded-xl hover:opacity-90 transition-opacity"
-            >
-              Cancelar
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const renderTicketModal = () => {
     if (!showTicketModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md mx-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Abrir Ticket de Suporte</h3>
             <button 
@@ -459,8 +322,8 @@ export default function BarberDashboard() {
     if (!showWhatsappModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md mx-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Conectar WhatsApp</h3>
             <button 
@@ -481,7 +344,7 @@ export default function BarberDashboard() {
             <div className="space-y-2">
               <p className="text-xs text-[#94A3B8]">Como conectar:</p>
               <p className="text-xs text-[#94A3B8]">1. Abra o WhatsApp no seu celular</p>
-              <p className="text-xs text-[#94A3B8]">2. Toque em ⋮ &gt; Dispositivos conectados</p>
+              <p className="text-xs text-[#94A3B8]">2. Toque em ⋮ > Dispositivos conectados</p>
               <p className="text-xs text-[#94A3B8]">3. Toque em "Conectar um dispositivo"</p>
               <p className="text-xs text-[#94A3B8]">4. Escaneie este QR Code</p>
             </div>
@@ -510,8 +373,8 @@ export default function BarberDashboard() {
     if (!showPlanModal) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-md mx-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Gerenciar Plano</h3>
             <button 
@@ -573,8 +436,8 @@ export default function BarberDashboard() {
     if (!showClientView) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-[#141416] rounded-2xl border border-[#1F2937] p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Visão do Cliente</h3>
             <button 
@@ -660,12 +523,12 @@ export default function BarberDashboard() {
 
   return (
     <BarberNavigation>
-      <div className="p-4 md:p-6">
+      <div className="p-6">
         {/* Header com Tag do Plano */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 space-y-4 md:space-y-0">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold mb-2">Dashboard</h1>
+              <h1 className="text-2xl font-bold mb-2">Dashboard</h1>
               <p className="text-[#94A3B8]">Visão geral do seu dia</p>
             </div>
             
@@ -684,54 +547,54 @@ export default function BarberDashboard() {
         </div>
 
         {/* Status Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 mb-6 md:mb-8">
-          <div className="bg-[#141416] p-3 md:p-4 rounded-2xl border border-[#1F2937]">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <div className="bg-[#141416] p-4 rounded-2xl border border-[#1F2937]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#94A3B8] text-xs md:text-sm">Agendamentos</p>
-                <p className="text-xl md:text-2xl font-bold">{todayStats.appointments}</p>
+                <p className="text-[#94A3B8] text-sm">Agendamentos</p>
+                <p className="text-2xl font-bold">{todayStats.appointments}</p>
               </div>
-              <Calendar className="w-6 md:w-8 h-6 md:h-8 text-[#3B82F6]" />
+              <Calendar className="w-8 h-8 text-[#3B82F6]" />
             </div>
           </div>
 
-          <div className="bg-[#141416] p-3 md:p-4 rounded-2xl border border-[#1F2937]">
+          <div className="bg-[#141416] p-4 rounded-2xl border border-[#1F2937]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#94A3B8] text-xs md:text-sm">Concluídos</p>
-                <p className="text-xl md:text-2xl font-bold text-[#10B981]">{todayStats.completed}</p>
+                <p className="text-[#94A3B8] text-sm">Concluídos</p>
+                <p className="text-2xl font-bold text-[#10B981]">{todayStats.completed}</p>
               </div>
-              <CheckCircle className="w-6 md:w-8 h-6 md:h-8 text-[#10B981]" />
+              <CheckCircle className="w-8 h-8 text-[#10B981]" />
             </div>
           </div>
 
-          <div className="bg-[#141416] p-3 md:p-4 rounded-2xl border border-[#1F2937]">
+          <div className="bg-[#141416] p-4 rounded-2xl border border-[#1F2937]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#94A3B8] text-xs md:text-sm">No-shows</p>
-                <p className="text-xl md:text-2xl font-bold text-[#EF4444]">{todayStats.noShows}</p>
+                <p className="text-[#94A3B8] text-sm">No-shows</p>
+                <p className="text-2xl font-bold text-[#EF4444]">{todayStats.noShows}</p>
               </div>
-              <UserX className="w-6 md:w-8 h-6 md:h-8 text-[#EF4444]" />
+              <UserX className="w-8 h-8 text-[#EF4444]" />
             </div>
           </div>
 
-          <div className="bg-[#141416] p-3 md:p-4 rounded-2xl border border-[#1F2937]">
+          <div className="bg-[#141416] p-4 rounded-2xl border border-[#1F2937]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#94A3B8] text-xs md:text-sm">Faturamento</p>
-                <p className="text-xl md:text-2xl font-bold text-[#D4AF37]">R$ {todayStats.revenue}</p>
+                <p className="text-[#94A3B8] text-sm">Faturamento</p>
+                <p className="text-2xl font-bold text-[#D4AF37]">R$ {todayStats.revenue}</p>
               </div>
-              <DollarSign className="w-6 md:w-8 h-6 md:h-8 text-[#D4AF37]" />
+              <DollarSign className="w-8 h-8 text-[#D4AF37]" />
             </div>
           </div>
 
-          <div className="bg-[#141416] p-3 md:p-4 rounded-2xl border border-[#1F2937]">
+          <div className="bg-[#141416] p-4 rounded-2xl border border-[#1F2937]">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[#94A3B8] text-xs md:text-sm">Ocupação</p>
-                <p className="text-xl md:text-2xl font-bold">{todayStats.occupancy}%</p>
+                <p className="text-[#94A3B8] text-sm">Ocupação</p>
+                <p className="text-2xl font-bold">{todayStats.occupancy}%</p>
               </div>
-              <BarChart3 className="w-6 md:w-8 h-6 md:h-8 text-[#3B82F6]" />
+              <BarChart3 className="w-8 h-8 text-[#3B82F6]" />
             </div>
           </div>
         </div>
@@ -740,9 +603,9 @@ export default function BarberDashboard() {
           {/* Agenda do Dia */}
           <div className="lg:col-span-2">
             <div className="bg-[#141416] rounded-2xl border border-[#1F2937]">
-              <div className="p-4 md:p-6 border-b border-[#1F2937]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
-                  <h2 className="text-lg md:text-xl font-bold">Agenda do Dia</h2>
+              <div className="p-6 border-b border-[#1F2937]">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold">Agenda do Dia</h2>
                   <div className="flex items-center space-x-2">
                     <input
                       type="date"
@@ -760,7 +623,7 @@ export default function BarberDashboard() {
                 </div>
               </div>
 
-              <div className="p-4 md:p-6">
+              <div className="p-6">
                 <div className="space-y-4">
                   {todayAppointments.map((appointment) => (
                     <div key={appointment.id} className="flex items-center justify-between p-4 bg-[#0C0C0D] rounded-xl border border-[#1F2937] hover:border-[#94A3B8] transition-colors">
@@ -780,7 +643,7 @@ export default function BarberDashboard() {
                       <div className="flex items-center space-x-3">
                         <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs ${getStatusColor(appointment.status)}`}>
                           {getStatusIcon(appointment.status)}
-                          <span className="hidden sm:inline">{getStatusText(appointment.status)}</span>
+                          <span>{getStatusText(appointment.status)}</span>
                         </div>
                         
                         <button className="p-1 text-[#94A3B8] hover:text-[#F5F5F7] transition-colors">
@@ -958,7 +821,6 @@ export default function BarberDashboard() {
       </div>
 
       {/* Modals */}
-      {renderNewAppointmentModal()}
       {renderTicketModal()}
       {renderWhatsAppModal()}
       {renderPlanModal()}
